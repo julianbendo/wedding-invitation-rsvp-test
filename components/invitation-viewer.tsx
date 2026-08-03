@@ -105,6 +105,12 @@ export function InvitationViewer({ guestName }: InvitationViewerProps) {
         <p className="text-gold/40 text-[10px] sm:text-xs tracking-[0.15em] sm:tracking-[0.2em]">
           Swipe to rotate the invitation
         </p>
+        <a
+  href={`/rsvp?guest=${encodeURIComponent(guestName || "")}`}
+  className="mt-6 inline-flex items-center justify-center px-8 py-3 border border-gold/40 text-gold tracking-[0.2em] uppercase text-xs hover:bg-gold hover:text-background transition-all duration-300"
+>
+  RSVP
+</a>
       </div>
     </div>
   )
