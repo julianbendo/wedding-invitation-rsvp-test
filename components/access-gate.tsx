@@ -6,24 +6,227 @@ import { Input } from "@/components/ui/input"
 
 // Guest list - only these names are allowed access
 const GUEST_LIST = [
-  "Elizabeth",
-  "Luna",
-  "Emma",
-  "Shaun",
-  "Antonio",
-  "Catherine",
-  "Adrian",
-  "Julian",
-  "Emanuele",
-  "Niccolò",
-  "Chiara",
-  "Giorgio",
-  "Hiromi",
-  "Silvia",
-  "Maya",
-  "Susan",
-  "Sophie",
-  "Christian",
+  "elizabeth",
+  "Elizabeth Bozzardi-Jones",
+
+  "julian",
+  "Julian Bozzardi",
+
+  "jessica",
+  "Jessica Lloyd-Jones",
+
+  "tim",
+  "Tim Brooker",
+
+  "david",
+  "David Lloyd-Jones",
+
+  "jeanie",
+  "Jeanie Lloyd-Jones",
+
+  "maya",
+  "Maya Kember",
+
+  "tanya",
+  "Tanya Ferreira",
+
+  "paulo",
+  "Paulo Rodrigues",
+
+  "victor",
+  "Victor Ferreira",
+
+  "louisa",
+  "Louisa Ferreira",
+
+  "katie",
+  "Katie Gibbs",
+
+  "paul",
+  "Paul Belton",
+
+  "sienna",
+  "Sienna Gibbs",
+
+  "emma",
+  "Emma Evans",
+
+  "emma lowrey",
+  "Emma Lowrey",
+
+  "shaun",
+  "Shaun Brachman",
+
+  "gage",
+  "Gage Pendergast",
+
+  "leah",
+  "Leah Fraser",
+
+  "kathleen",
+  "Kathleen Davis",
+
+  "sean",
+  "Sean Davis",
+
+  "sophie",
+  "Sophie Weiss",
+
+  "rebecca",
+  "Rebecca Ross",
+
+  "raymond",
+  "Raymond Agholor",
+
+  "hayley",
+  "Hayley Anne-Buck",
+
+  "mark",
+  "Mark Rouse",
+
+  "alaaeldeen",
+  "Alaaeldeen Ali",
+
+  "clarisse",
+  "Clarisse Tenchavez-Ali",
+
+  "lawrence",
+  "Lawrence Cooper",
+
+  "paris",
+  "Paris Adams",
+
+  "giorgio",
+  "Giorgio Santaniello",
+
+  "hiromi",
+  "Hiromi Santaniello",
+
+  "niccolo",
+  "Niccolo D`Antoni",
+
+  "chiara",
+  "Chiara Rossi",
+
+  "adrian",
+  "Adrian Bozzardi",
+
+  "luc",
+  "Luc Valet",
+
+  "charlotte",
+  "Charlotte Chauvet",
+
+  "arnold",
+  "Arnold Muller",
+
+  "steven",
+  "Steven Ferreira",
+
+  "gemma",
+  "Gemma Gilbert",
+
+  "edson",
+  "Edson",
+
+  "pat",
+  "Pat Lowrey",
+
+  "debbie",
+  "Debbie Lowrey",
+
+  "patrick",
+  "Patrick Lowrey",
+
+  "alison",
+  "Alison Smith",
+
+  "caryl",
+  "Caryl Lowrey",
+
+  "ciara",
+  "Ciara Lowrey",
+
+  "freddie",
+  "Freddie Ashdown",
+
+  "bernie",
+  "Bernie Richards",
+
+  "ashley",
+  "Ashley Richards",
+
+  "melissa",
+  "Melissa Hart",
+
+  "james",
+  "James Hart",
+
+  "elayne",
+  "Elayne Feerick",
+
+  "ronnie",
+  "Ronnie Feerick",
+
+  "dj",
+  "DJ Feerick",
+
+  "alanna",
+  "Alanna Feerick",
+
+  "allison",
+  "Allison Crome",
+
+  "sophie boarer",
+  "Sophie Boarer",
+
+  "dan",
+  "Dan Boarer",
+
+  "luna",
+  "Luna Karimine Bozzardi-Jones",
+
+  "emily",
+  "Emily Ferreira Rodrigues",
+
+  "aiden",
+  "Aiden Ferreira Rodrigues",
+
+  "alex",
+  "Alex Ferreira Rodrigues",
+
+  "ryan",
+  "Ryan Ferreira Rodrigues",
+
+  "zakaria",
+  "Zakaria Tenchavez-Ali",
+
+  "noah",
+  "Noah Ross",
+
+  "luena",
+  "Luena Lurdes",
+
+  "luiza",
+  "Luiza Lurdes",
+
+  "maria",
+  "Maria Lurdes",
+
+  "luzia",
+  "Luzia Lurdes",
+
+  "fae",
+  "Fae Crome",
+
+  "amelie",
+  "Amelie Boarer",
+
+  "penny",
+  "Penny Boarer",
+
+  "keeley",
+  "Keeley Hart",
 ]
 
 // Normalize name for comparison (lowercase, trim, handle accents)
@@ -58,10 +261,14 @@ export function AccessGate({ onEnter }: AccessGateProps) {
         setIsSubmitting(true)
         setTimeout(() => {
           // Find the correctly capitalized name from guest list
-          const matchedGuest = GUEST_LIST.find(
-            guest => normalizeName(guest) === normalizeName(name.trim())
-          )
-          onEnter(matchedGuest || name.trim())
+          const formattedName = name
+  .trim()
+  .toLowerCase()
+  .split(" ")
+  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+  .join(" ")
+
+onEnter(formattedName)
         }, 500)
       } else {
         setError("We couldn't find your name on the guest list. Please check the spelling or contact the hosts.")
