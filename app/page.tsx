@@ -3,7 +3,27 @@
 import { useState, useEffect } from "react"
 import { AccessGate } from "@/components/access-gate"
 // import { Envelope } from "@/components/envelope"
-import { InvitationViewer } from "@/components/invitation-viewer"
+import dynamic from "next/dynamic"
+
+const InvitationViewer = dynamic(
+  () =>
+    import("@/components/invitation-viewer").then(
+      (mod) => mod.InvitationViewer
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gold/70 tracking-[0.2em] uppercase text-xs">
+            Preparing your invitation...
+          </p>
+        </div>
+      </div>
+    ),
+  }
+)
 
 // Guest list for URL parameter validation
 const GUEST_LIST = {
@@ -139,6 +159,9 @@ const GUEST_LIST = {
   "alison": "Alison Smith",
   "alison smith": "Alison Smith",
 
+  "steve": "Steve Davies",
+  "steve davies": "Steve Davies",
+
   "caryl": "Caryl Lowrey",
   "caryl lowrey": "Caryl Lowrey",
 
@@ -236,7 +259,12 @@ function normalizeName(name: string): string {
 
 function findGuest(name: string): string | null {
   const normalizedInput = normalizeName(name)
-  return GUEST_LIST.find(guest => normalizeName(guest) === normalizedInput) || null
+
+  const match = Object.keys(GUEST_LIST).find(
+(guest: string) => normalizeName(guest) === normalizedInput
+)
+
+  return match ? GUEST_LIST[match as keyof typeof GUEST_LIST] : null
 }
 
 type Stage = "gate" | "invitation"
@@ -244,7 +272,7 @@ type Stage = "gate" | "invitation"
 export default function InvitationPage() {
   const [stage, setStage] = useState<Stage>("gate")
   const [guestName, setGuestName] = useState("")
-  const [isTransitioning, setIsTransitioning] = useState(false)
+  
 
   // Check for access token in URL (optional secret link feature)
   useEffect(() => {
@@ -265,13 +293,13 @@ export default function InvitationPage() {
   }, [])
 
   const handleEnterGate = (name: string) => {
-    setGuestName(name)
-    setIsTransitioning(true)
-    setTimeout(() => {
-      setStage("invitation") 
-      setIsTransitioning(false)
-    }, 600)
-  }
+
+  setGuestName(name)
+
+  setStage("invitation")
+
+}
+
 
   return (
     <main className="min-h-screen bg-background overflow-hidden">
@@ -289,36 +317,34 @@ export default function InvitationPage() {
 
       {/* Subtle particle/star effect */}
       <div className="fixed inset-0 pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(15)].map((_, i) => (
           <div
             key={i}
             className="absolute w-0.5 h-0.5 bg-gold/30 rounded-full"
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
-              animation: `sparkle ${2 + Math.random() * 3}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 2}s`,
+              animation: `sparkle ${8 + Math.random() * 10}s ease-in-out infinite`,
+              animationDelay: `${Math.random() * 8}s`,
             }}
           />
         ))}
       </div>
 
       {/* Content */}
-      <div 
-        className={`relative z-10 transition-opacity duration-500 ${
-          isTransitioning ? "opacity-0" : "opacity-100"
-        }`}
-      >
-        {stage === "gate" && (
-          <AccessGate onEnter={handleEnterGate} />
-        )}
+<div className="relative z-10">
 
-        {stage === "invitation" && (
-          <div className="min-h-screen flex items-center justify-center p-2 sm:p-4 md:p-6 py-6 sm:py-8">
-            <InvitationViewer guestName={guestName} />
-          </div>
-        )}
-      </div>
+  {stage === "gate" && (
+    <AccessGate onEnter={handleEnterGate} />
+  )}
+
+  {stage === "invitation" && (
+    <div className="min-h-screen flex items-center justify-center px-2 py-2 sm:px-4 sm:py-6 animate-fadeIn">
+      <InvitationViewer guestName={guestName} />
+    </div>
+  )}
+
+</div>
     </main>
   )
 }

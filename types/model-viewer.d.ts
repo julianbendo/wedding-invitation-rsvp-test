@@ -7,6 +7,7 @@ declare global {
         React.HTMLAttributes<HTMLElement> & {
           src?: string
           alt?: string
+          loading?: string
           "camera-controls"?: boolean | string
           "camera-orbit"?: string
           "min-camera-orbit"?: string
@@ -19,6 +20,7 @@ declare global {
           "environment-image"?: string
           "tone-mapping"?: string
           "interaction-prompt"?: string
+          "orbit-sensitivity"?: string
         },
         HTMLElement
       >

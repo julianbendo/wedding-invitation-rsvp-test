@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { useSearchParams } from "next/navigation"
 
-export default function RSVPPage() {
+function RSVPContent() {
 
   const searchParams = useSearchParams()
 
@@ -238,5 +238,18 @@ if (sent) {
       </form>
 
     </main>
+  )
+}
+export default function RSVPPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-background flex items-center justify-center">
+          <p className="text-gold">Loading RSVP...</p>
+        </main>
+      }
+    >
+      <RSVPContent />
+    </Suspense>
   )
 }

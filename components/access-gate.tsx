@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 // Guest list - only these names are allowed access
@@ -141,6 +140,9 @@ const GUEST_LIST = [
   "alison",
   "Alison Smith",
 
+  "steve",
+  "Steve Davies",
+
   "caryl",
   "Caryl Lowrey",
 
@@ -249,41 +251,58 @@ interface AccessGateProps {
 
 export function AccessGate({ onEnter }: AccessGateProps) {
   const [name, setName] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  
   const [error, setError] = useState("")
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setError("")
-    
-    if (name.trim()) {
-      if (isGuestAllowed(name.trim())) {
-        setIsSubmitting(true)
-        setTimeout(() => {
-          // Find the correctly capitalized name from guest list
-          const formattedName = name
-  .trim()
-  .toLowerCase()
-  .split(" ")
-  .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-  .join(" ")
+const handleSubmit = (e: React.FormEvent) => {
+
+  e.preventDefault()
+
+
+  setError("")
+
+  const trimmedName = name.trim()
+
+  if (!trimmedName) {
+    return
+  }
+
+  if (isGuestAllowed(trimmedName)) {
+
+    const formattedName = trimmedName
+      .toLowerCase()
+      .split(" ")
+      .map(word =>
+        word.charAt(0).toUpperCase() + word.slice(1)
+      )
+      .join(" ")
+
 
 onEnter(formattedName)
-        }, 500)
-      } else {
-        setError("We couldn't find your name on the guest list. Please check the spelling or contact the hosts.")
-      }
-    }
+
+  } else {
+
+    setError(
+      "We couldn't find your name on the guest list. Please check the spelling or contact the hosts."
+    )
+
   }
+}
 
   return (
     <div 
-      className={`min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 transition-opacity duration-500 ${
-        isSubmitting ? "opacity-0" : "opacity-100"
-      }`}
+      className="
+min-h-screen 
+flex 
+flex-col 
+items-center 
+justify-center 
+p-4 
+sm:p-6
+"
     >
       {/* Decorative top flourish */}
-      <div className="mb-8 sm:mb-12 text-gold/30">
+      <div className="mb-8 sm:mb-12 text-gold/30 pointer-events-none">
         <svg width="100" height="20" viewBox="0 0 120 24" fill="none" className="mx-auto w-20 sm:w-28">
           <path 
             d="M0 12h50M70 12h50M55 4c-5 0-5 8-5 8s0 8 5 8M65 4c5 0 5 8 5 8s0 8-5 8" 
@@ -293,7 +312,7 @@ onEnter(formattedName)
         </svg>
       </div>
 
-      <div className="text-center mb-8 sm:mb-10 animate-fade-in-up px-4">
+      <div className="text-center mb-8 sm:mb-10 animate-fade-in-up px-4 pointer-events-none">
         <p className="text-gold/50 text-xs sm:text-sm tracking-[0.25em] sm:tracking-[0.3em] uppercase mb-3 sm:mb-4">
           You have received
         </p>
@@ -303,11 +322,10 @@ onEnter(formattedName)
         <div className="w-16 sm:w-24 h-px bg-gold/30 mx-auto mt-4 sm:mt-6" />
       </div>
 
-      <form 
-        onSubmit={handleSubmit} 
-        className="w-full max-w-xs sm:max-w-sm animate-fade-in-up px-4"
-        style={{ animationDelay: "0.2s" }}
-      >
+      <form
+  onSubmit={handleSubmit}
+  className="w-full max-w-xs sm:max-w-sm animate-fade-in-up px-4"
+>
         <div className="space-y-4 sm:space-y-6">
           <div className="text-center">
             <label 
@@ -329,7 +347,6 @@ onEnter(formattedName)
                 error ? "border-red-500/50" : ""
               }`}
               autoComplete="name"
-              autoFocus
             />
             {error && (
               <p className="mt-3 text-red-400/80 text-xs sm:text-sm leading-relaxed">
@@ -338,13 +355,16 @@ onEnter(formattedName)
             )}
           </div>
 
-          <Button
-            type="submit"
-            className="w-full py-5 sm:py-6 text-sm sm:text-base tracking-[0.15em] sm:tracking-[0.2em] uppercase bg-gold hover:bg-gold-light text-primary-foreground transition-all duration-300 font-medium"
-            disabled={!name.trim()}
-          >
-            View Invitation
-          </Button>
+          <button
+  type="submit"
+  className={`w-full py-5 sm:py-6 text-sm sm:text-base tracking-[0.15em] sm:tracking-[0.2em] uppercase text-primary-foreground transition-all duration-300 font-medium ${
+    name.trim()
+      ? "bg-gold hover:bg-gold-light"
+      : "bg-gold/40 cursor-not-allowed"
+  }`}
+>
+  View Invitation
+</button>
         </div>
       </form>
 
@@ -358,6 +378,7 @@ onEnter(formattedName)
           />
         </svg>
       </div>
+      
     </div>
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface InvitationViewerProps {
   guestName?: string
@@ -8,11 +8,82 @@ interface InvitationViewerProps {
 
 export function InvitationViewer({ guestName }: InvitationViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+const modelRef = useRef<any>(null)
+const glowRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    // Dynamically import model-viewer for client-side only
-    import("@google/model-viewer")
-  }, [])
+  async function loadModelViewer() {
+    await import("@google/model-viewer")
+
+    const model = modelRef.current
+
+    if (!model) return
+
+    if (model.shadowRoot?.querySelector("#custom-style")) return
+
+    const style = document.createElement("style")
+    style.id = "custom-style"
+
+    style.textContent = `
+      #default-ar-button,
+      #default-progress-bar,
+      .slot.default,
+      [slot="ar-button"],
+      .fab,
+      .progress-bar,
+      .update-bar {
+        display:none !important;
+      }
+    `
+
+    model.shadowRoot?.appendChild(style)
+  }
+
+  loadModelViewer()
+}, [])
+
+useEffect(() => {
+
+  const model = modelRef.current
+
+  if (!model) return
+
+  const handleMove = () => {
+
+    const orbit = model.getCameraOrbit()
+
+    const x = Math.sin(
+      orbit.theta
+    ) * 35
+
+    const y = Math.cos(
+      orbit.phi
+    ) * 20
+
+
+    if (glowRef.current) {
+
+      glowRef.current.style.transform =
+        `translate(${x}px, ${y}px)`
+
+    }
+
+  }
+
+  model.addEventListener(
+    "camera-change",
+    handleMove
+  )
+
+
+  return () => {
+    model.removeEventListener(
+      "camera-change",
+      handleMove
+    )
+  }
+
+}, [])
 
   return (
     <div 
@@ -21,10 +92,10 @@ export function InvitationViewer({ guestName }: InvitationViewerProps) {
     >
       {guestName && (
         <div className="mb-3 sm:mb-4 text-center">
-          <p className="text-gold/60 text-xs sm:text-sm tracking-[0.3em] uppercase mb-1">
+          <p className="text-gold/60 text-[10px] sm:text-sm tracking-[0.3em] uppercase mb-1">
             Dear
           </p>
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-light text-gold tracking-wide">
+          <h2 className="text-lg sm:text-2xl md:text-3xl font-light text-gold tracking-wide">
             {guestName}
           </h2>
         </div>
@@ -33,21 +104,59 @@ export function InvitationViewer({ guestName }: InvitationViewerProps) {
       {/* Ambient light glow behind the card */}
       <div className="relative w-full flex items-center justify-center">
         {/* Glow effect */}
-        <div className="absolute w-[200px] sm:w-[280px] md:w-[320px] h-[400px] sm:h-[560px] md:h-[640px] bg-gold/10 rounded-full blur-[80px] animate-glow-pulse pointer-events-none" />
+        <div
+  ref={glowRef}
+  className="
+    absolute
+    w-[200px]
+    sm:w-[280px]
+    md:w-[320px]
+    h-[400px]
+    sm:h-[560px]
+    md:h-[640px]
+    bg-gold/10
+    rounded-full
+    blur-[80px]
+    animate-glow-pulse
+    pointer-events-none
+    transition-transform
+    duration-500
+  "
+/>
         
         {/* Model viewer container - aspect ratio 10.2:23.5 (approximately 1:2.3) */}
         <div 
-          className="w-screen h-[520px] sm:h-[680px] md:h-[780px] lg:h-[860px]"
-
+          className="
+w-full
+max-w-[420px]
+h-[52vh]
+sm:h-[70vh]
+md:h-[80vh]
+"
         >
           {/* Spotlight effects for metallic shine */}
-          <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-64 h-64 bg-white/15 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute top-1/4 -left-16 w-32 h-32 bg-amber-300/15 rounded-full blur-2xl pointer-events-none" />
-          <div className="absolute top-1/4 -right-16 w-32 h-32 bg-amber-300/15 rounded-full blur-2xl pointer-events-none" />
-          
+          <div
+  className="
+    absolute
+    -top-40
+    left-1/2
+    -translate-x-1/2
+    w-[420px]
+    h-[220px]
+    bg-white/10
+    rounded-full
+    blur-[120px]
+    pointer-events-none
+  "
+/>
+
           {/* @ts-expect-error - model-viewer is a web component */}
           <model-viewer
+          
+            loading="eager"
             src="/invitation.glb"
+            onLoad={() => alert("MODEL LOADED")}
+            onError={() => alert("MODEL FAILED")}
             alt="Wedding Invitation Card"
             camera-controls
             interaction-prompt="none"
@@ -58,33 +167,17 @@ export function InvitationViewer({ guestName }: InvitationViewerProps) {
             min-field-of-view="10deg"
             max-field-of-view="50deg"
             field-of-view="45deg"
-            exposure="0.9"
-            shadow-intensity="0.5"
-            environment-image="neutral"
-            tone-mapping="commerce"
+            exposure="1"
+            shadow-intensity="0"
+            environment-image="glasshouse_interior_1k.hdr"
+            tone-mapping="neutral"
             style={{
               width: "100%",
               height: "100%",
               backgroundColor: "transparent",
               "--poster-color": "transparent",
             } as React.CSSProperties}
-            ref={(el: any) => {
-              if (el) {
-                // Hide all default model-viewer UI via shadow DOM
-                const style = document.createElement("style")
-                style.textContent = `
-                  :host > * { pointer-events: auto; }
-                  #default-ar-button,
-                  #default-progress-bar,
-                  .slot.default,
-                  [slot="ar-button"],
-                  .fab,
-                  .progress-bar,
-                  .update-bar { display: none !important; }
-                `
-                el.shadowRoot?.appendChild(style)
-              }
-            }}
+            ref={modelRef}
           >
             <div 
               slot="poster"
@@ -93,7 +186,7 @@ export function InvitationViewer({ guestName }: InvitationViewerProps) {
               <div className="text-center">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-3" />
                 <p className="text-gold/60 text-xs tracking-[0.2em]">
-                  Loading...
+                  Preparing your invitation...
                 </p>
               </div>
             </div>
@@ -107,7 +200,7 @@ export function InvitationViewer({ guestName }: InvitationViewerProps) {
         </p>
         <a
   href={`/rsvp?guest=${encodeURIComponent(guestName || "")}`}
-  className="mt-6 inline-flex items-center justify-center px-8 py-3 border border-gold/40 text-gold tracking-[0.2em] uppercase text-xs hover:bg-gold hover:text-background transition-all duration-300"
+  className="mt-4 inline-flex items-center justify-center px-6 py-2.5 border border-gold/40 text-gold tracking-[0.18em] uppercase text-[11px] hover:bg-gold hover:text-background transition-all duration-300"
 >
   RSVP
 </a>
