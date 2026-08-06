@@ -128,10 +128,10 @@ useEffect(() => {
         <div 
           className="
 w-full
-max-w-[420px]
-h-[52vh]
-sm:h-[70vh]
-md:h-[80vh]
+max-w-[460px]
+h-[58vh]
+sm:h-[74vh]
+md:h-[82vh]
 "
         >
           {/* Spotlight effects for metallic shine */}
