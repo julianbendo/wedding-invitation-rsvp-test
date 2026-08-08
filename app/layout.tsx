@@ -14,7 +14,19 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: 'Wedding Invitation',
   description: 'You are cordially invited to celebrate our special day',
-  generator: 'v0.app',
+  openGraph: {
+    title: 'Wedding Invitation',
+    description: 'You are cordially invited to celebrate our special day',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Wedding Invitation',
+      },
+    ],
+  },
+
   icons: {
     icon: [
       {

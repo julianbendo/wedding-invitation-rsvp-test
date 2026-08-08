@@ -91,7 +91,7 @@ useEffect(() => {
       className="w-full h-full flex flex-col items-center justify-center animate-fade-in-up px-2 sm:px-4"
     >
       {guestName && (
-        <div className="mb-3 sm:mb-4 text-center">
+        <div className="mb-2 sm:mb-2 text-center">
           <p className="text-gold/60 text-[10px] sm:text-sm tracking-[0.3em] uppercase mb-1">
             Dear
           </p>
@@ -128,10 +128,10 @@ useEffect(() => {
         <div 
           className="
 w-full
-max-w-[460px]
-h-[58vh]
-sm:h-[74vh]
-md:h-[82vh]
+max-w-[520px]
+h-[66vh]
+sm:h-[80vh]
+md:h-[86vh]
 "
         >
           {/* Spotlight effects for metallic shine */}
@@ -155,12 +155,10 @@ md:h-[82vh]
           
             loading="eager"
             src="/invitation.glb"
-            onLoad={() => alert("MODEL LOADED")}
-            onError={() => alert("MODEL FAILED")}
             alt="Wedding Invitation Card"
             camera-controls
             interaction-prompt="none"
-            camera-orbit="0deg 90deg 6m"
+            camera-orbit="0deg 90deg 6.4m"
             min-camera-orbit="-Infinity -180deg auto"
             max-camera-orbit="Infinity 180deg auto"
             orbit-sensitivity="0.85"
@@ -194,7 +192,7 @@ md:h-[82vh]
         </div>
       </div>
 
-      <div className="mt-4 sm:mt-6 text-center">
+      <div className="mt-2 sm:mt-3 text-center">
         <p className="text-gold/40 text-[10px] sm:text-xs tracking-[0.15em] sm:tracking-[0.2em]">
           Swipe to rotate the invitation
         </p>
