@@ -129,7 +129,7 @@ useEffect(() => {
           className="
 w-full
 max-w-[520px]
-h-[66vh]
+h-[60vh]
 sm:h-[80vh]
 md:h-[86vh]
 "
@@ -158,7 +158,7 @@ md:h-[86vh]
             alt="Wedding Invitation Card"
             camera-controls
             interaction-prompt="none"
-            camera-orbit="0deg 90deg 6.4m"
+            camera-orbit="0deg 90deg 8m"
             min-camera-orbit="-Infinity -180deg auto"
             max-camera-orbit="Infinity 180deg auto"
             orbit-sensitivity="0.85"
@@ -198,7 +198,7 @@ md:h-[86vh]
         </p>
         <a
   href={`/rsvp?guest=${encodeURIComponent(guestName || "")}`}
-  className="mt-4 inline-flex items-center justify-center px-6 py-2.5 border border-gold/40 text-gold tracking-[0.18em] uppercase text-[11px] hover:bg-gold hover:text-background transition-all duration-300"
+  className="mt-3 inline-flex items-center justify-center px-6 py-2.5 border border-gold/40 text-gold tracking-[0.18em] uppercase text-[11px] hover:bg-gold hover:text-background transition-all duration-300"
 >
   RSVP
 </a>
